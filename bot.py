@@ -6,6 +6,21 @@ from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, Con
 import os
 TOKEN = os.environ.get("8478581408:AAH0OGhkMnqUh_MvkBsGZk6vYhzWfyNHolk")
 
+from flask import Flask
+from threading import Thread
+
+app_flask = Flask('')
+
+@app_flask.route('/')
+def home():
+    return "Bot is running!"
+
+def run():
+    app_flask.run(host='0.0.0.0', port=8080)
+
+def keep_alive():
+    t = Thread(target=run)
+    t.start()
 
 # Кнопки выбора времени дня
 keyboard = [["Утро", "День", "Ночь"]]
@@ -46,6 +61,9 @@ app.add_handler(CommandHandler("start", start))
 app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
 # Запуск бота
+keep_alive()
 app.run_polling()
+
+
 
 
