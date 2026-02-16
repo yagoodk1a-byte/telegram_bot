@@ -3,7 +3,9 @@ from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, ContextTypes, filters
 
 # Вставь сюда токен от BotFather в кавычках
-TOKEN = "8478581408:AAH0OGhkMnqUh_MvkBsGZk6vYhzWfyNHolk"
+import os
+TOKEN = os.environ.get("8478581408:AAH0OGhkMnqUh_MvkBsGZk6vYhzWfyNHolk")
+
 
 # Кнопки выбора времени дня
 keyboard = [["Утро", "День", "Ночь"]]
@@ -45,4 +47,5 @@ app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
 # Запуск бота
 app.run_polling()
+
 
