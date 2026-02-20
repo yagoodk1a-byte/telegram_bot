@@ -24,7 +24,11 @@ def keep_alive():
 
 # Кнопки выбора времени дня
 keyboard = [["Утро", "День", "Ночь"]]
-markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+keyboard = InlineKeyboardMarkup()
+menu_1 = InlineKeyboardButton(text='Утро', callback_data="menu_1")
+menu_2 = InlineKeyboardButton(text='День', callback_data="menu_2")
+menu_3 = InlineKeyboardButton(text='Ночь', callback_data="menu_3")
+keyboard.add(menu_1, menu_2, menu_3)
 
 # Команда /start
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -62,7 +66,9 @@ app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
 # Запуск бота
 keep_alive()
+restart=always()
 app.run_polling()
+
 
 
 
