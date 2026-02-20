@@ -40,6 +40,19 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # Обработка сообщений
 async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text
+    @dp.callback_query_handler(text_contains='menu_'):
+    if call.data and call.data.startswith("menu_"):
+        code = call.data[-1:]
+        if code.isdigit():
+            code = int(code)
+        if code == 1:
+            await call.message.edit_text('Утро', reply_markup=keyboard)
+        if code == 2:
+            await call.message.edit_text('День', reply_markup=keyboard)
+        if code == 3:
+            await call.message.edit_text('Ночь', reply_markup=keyboard)
+        else:
+            await bot.answer_callback_query(call.id)
 
     # Находим ВСЕ числа (включая отрицательные)
     numbers = re.findall(r'-?\d+', text)
@@ -68,6 +81,7 @@ app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 keep_alive()
 restart=always()
 app.run_polling()
+
 
 
 
