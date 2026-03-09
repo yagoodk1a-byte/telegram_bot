@@ -2,8 +2,7 @@
 import re
 import telebot
 
-
-bot=telebot.TeleBot("8358575962:AAFscZFM5pElS0AWZs_1kBZFnH-NyLwf034")
+bot = telebot.TeleBot("8358575962:AAFscZFM5pElS0AWZs_1kBZFnH-NyLwf034")
 
 lots = {
 
@@ -52,30 +51,6 @@ lots = {
 
 def calculate_chests(text):
 
-
-@bot.message_handler(commands=['start'])
-def main(message):
-    bot.send_message(message.chat.id, f"Привет, {message.from_user.first_name}, теперь я не только могу посчитать баланс и сумму карт, но и расписывать твои лоты!")
-
-
-@bot.message_handler(func=lambda message: message.text and message.text.lower() == "привет")
-def info(message):
-    if message.text.lower() == "привет":
-        bot.send_message(message.chat.id, f"Привет, {message.from_user.first_name}, можешь отправить мне любое сообщение с текстом и числами, я все посчитаю!")
-
-
-@bot.message_handler(func=lambda message: True)
-def handle_message(message):
-
-    text = message.text
-
-    # если сообщение содержит лоты
-    if ":" in text:
-
-        result = calculate_chests(text)
-
-       def calculate_chests(text):
-
     lines = text.split("\n")
     result = []
 
@@ -91,7 +66,6 @@ def handle_message(message):
 
         # если написали только номер (например 10)
         if "/" not in lot:
-            # ищем первый лот с этим номером
             lot_key = None
             for key in lots:
                 if key.startswith(lot + "/"):
@@ -117,15 +91,44 @@ def handle_message(message):
 
     return "\n".join(result)
 
-    # Ищем все целые и дробные числа (включая отрицательные)
+
+@bot.message_handler(commands=['start'])
+def main(message):
+    bot.send_message(
+        message.chat.id,
+        f"Привет, {message.from_user.first_name}, теперь я могу считать числа и расписывать лоты!"
+    )
+
+
+@bot.message_handler(func=lambda message: message.text and message.text.lower() == "привет")
+def info(message):
+    bot.send_message(
+        message.chat.id,
+        f"Привет, {message.from_user.first_name}, отправь числа или лоты."
+    )
+
+
+@bot.message_handler(func=lambda message: True)
+def handle_message(message):
+
+    text = message.text
+
+    # если есть :
+    if ":" in text:
+
+        result = calculate_chests(text)
+
+        if result:
+            bot.reply_to(message, result)
+            return
+
+    # обычный подсчёт чисел
     numbers = re.findall(r'-?\d+\.?\d*', text)
 
-    # Если чисел нет
     if not numbers:
         bot.reply_to(message, "В сообщении нет чисел)")
         return
 
-    # Преобразуем строки в числа
     numbers = [float(num) for num in numbers]
 
     positive_sum = sum(num for num in numbers if num > 0)
@@ -142,8 +145,3 @@ def handle_message(message):
 
 
 bot.polling(none_stop=True)
-
-
-
-
-
