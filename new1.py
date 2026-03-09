@@ -74,9 +74,48 @@ def handle_message(message):
 
         result = calculate_chests(text)
 
-        if result:
-            bot.reply_to(message, result)
-            return
+       def calculate_chests(text):
+
+    lines = text.split("\n")
+    result = []
+
+    for line in lines:
+
+        match = re.search(r'([\d/]+)\s*:\s*(\d+)', line)
+
+        if not match:
+            continue
+
+        lot = match.group(1)
+        count = int(match.group(2))
+
+        # если написали только номер (например 10)
+        if "/" not in lot:
+            # ищем первый лот с этим номером
+            lot_key = None
+            for key in lots:
+                if key.startswith(lot + "/"):
+                    lot_key = key
+                    break
+        else:
+            lot_key = lot
+
+        if lot_key in lots:
+
+            chests = lots[lot_key]
+            multiplied = [x * count for x in chests]
+
+            result.append(
+                f"{lot_key}: {count} - {'/'.join(map(str, multiplied))}"
+            )
+
+        else:
+            result.append(f"{lot}: лот не найден")
+
+    if not result:
+        return None
+
+    return "\n".join(result)
 
     # Ищем все целые и дробные числа (включая отрицательные)
     numbers = re.findall(r'-?\d+\.?\d*', text)
@@ -103,6 +142,7 @@ def handle_message(message):
 
 
 bot.polling(none_stop=True)
+
 
 
 
