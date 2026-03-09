@@ -3,8 +3,6 @@ import re
 import telebot
 import re
 
-import re
-
 lots = {
 
 # 400
@@ -105,5 +103,6 @@ def handle_message(message):
 
 
 bot.polling(none_stop=True)
+
 
 
