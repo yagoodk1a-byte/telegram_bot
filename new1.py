@@ -65,18 +65,20 @@ def info(message):
     if message.text.lower() == "привет":
         bot.send_message(message.chat.id, f"Привет, {message.from_user.first_name}, можешь отправить мне любое сообщение с текстом и числами, я все посчитаю!")
 
-@dp.message()
-async def handler(message: types.Message):
-
-    result = calculate_chests(message.text)
-
-    if result:
-        await message.answer(result)
-
 
 @bot.message_handler(func=lambda message: True)
 def handle_message(message):
+
     text = message.text
+
+    # если сообщение содержит лоты
+    if ":" in text:
+
+        result = calculate_chests(text)
+
+        if result:
+            bot.reply_to(message, result)
+            return
 
     # Ищем все целые и дробные числа (включая отрицательные)
     numbers = re.findall(r'-?\d+\.?\d*', text)
@@ -103,4 +105,5 @@ def handle_message(message):
 
 
 bot.polling(none_stop=True)
+
 
