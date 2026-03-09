@@ -1,7 +1,9 @@
 
 import re
 import telebot
-import re
+
+
+bot=telebot.TeleBot("8358575962:AAFscZFM5pElS0AWZs_1kBZFnH-NyLwf034")
 
 lots = {
 
@@ -50,8 +52,6 @@ lots = {
 
 def calculate_chests(text):
 
-
-bot=telebot.TeleBot("8358575962:AAFscZFM5pElS0AWZs_1kBZFnH-NyLwf034")
 
 @bot.message_handler(commands=['start'])
 def main(message):
@@ -103,6 +103,7 @@ def handle_message(message):
 
 
 bot.polling(none_stop=True)
+
 
 
 
