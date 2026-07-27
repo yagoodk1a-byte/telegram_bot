@@ -54,6 +54,8 @@ def calculate_chests(text):
     lines = text.split("\n")
     result = []
 
+    totals = []
+
     for line in lines:
 
         match = re.search(r'([\d/]+)\s*:\s*(\d+)', line)
@@ -64,7 +66,7 @@ def calculate_chests(text):
         lot = match.group(1)
         count = int(match.group(2))
 
-        # если написали только номер (например 10)
+        # если написали только номер (например 41)
         if "/" not in lot:
             lot_key = None
             for key in lots:
@@ -79,8 +81,22 @@ def calculate_chests(text):
             chests = lots[lot_key]
             multiplied = [x * count for x in chests]
 
+            # создаём список итогов нужной длины
+            while len(totals) < len(multiplied):
+                totals.append(0)
+
+            # суммируем сундуки
+            for i, value in enumerate(multiplied):
+                totals[i] += value
+
+            # оформление заголовка
+            if lot_key.endswith("/400"):
+                title = lot_key.split("/")[0]
+            else:
+                title = lot_key
+
             result.append(
-                f"{lot_key}: {count} - {'/'.join(map(str, multiplied))}"
+                f"{title}: {count} - {'/'.join(map(str, multiplied))}"
             )
 
         else:
@@ -89,8 +105,13 @@ def calculate_chests(text):
     if not result:
         return None
 
-    return "\n".join(result)
+    # добавляем итог
+    if totals:
+        result.append("")
+        result.append("────────────")
+        result.append(f"Итого: {'/'.join(map(str, totals))}")
 
+    return "\n".join(result)
 
 @bot.message_handler(commands=['start'])
 def main(message):
